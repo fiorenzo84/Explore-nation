@@ -1,12 +1,15 @@
-import "./App.css";
+import {BrowserRouter as Router} from "react-router-dom";
+import {AppRoutes} from "./routes/AppRoutes";
+import {Header} from "./layouts/Header";
+import {Footer} from "./layouts/Footer";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-4xl font-bold text-center text-gray-800 my-4">
-        Bienvenue sur ExploreNation
-      </h1>
-    </div>
+    <Router>
+      <Header />
+      <AppRoutes />
+      <Footer />
+    </Router>
   );
 }
 
