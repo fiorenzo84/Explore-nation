@@ -17,6 +17,6 @@ h1 {
   font-family: "Pacifico", cursive;
 }
 
-p {
-  font-family: "poppins";
+input, a, input::placeholder {
+  font-family: "Pacifico", cursive;
 }
