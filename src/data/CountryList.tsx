@@ -1,37 +1,47 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import {useState, useEffect} from "react";
+import {Link} from "react-router-dom";
+import axios from "axios";
 
 interface Country {
-    cca3: string;
-    name: {
-      common: string;
-      // Autres propriétés selon la réponse de l'API
-    };
-    // Autres propriétés nécessaires
-  }
+  cca3: string;
+  name: {
+    common: string;
+  };
+}
 
+interface CountryListProps {
+  searchTerm: string;
+}
 
-  const CountryList: React.FC = () =>{
-    const [countries, setCountries] = useState<Country[]>([]);
+export const CountryList: React.FC<CountryListProps> = ({searchTerm}) => {
+  const [countries, setCountries] = useState<Country[]>([]);
 
   useEffect(() => {
-    axios.get<Country[]>('https://restcountries.com/v3.1/all')
-      .then(response => {
+    axios
+      .get<Country[]>("https://restcountries.com/v3.1/all")
+      .then((response) => {
         console.log("Data from API:", response.data);
         setCountries(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   }, []);
 
+  // Trouver un pays correspondant
+  const filteredCountries = searchTerm
+    ? countries.filter((country) =>
+        country.name.common.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
+
   return (
     <div>
-      {countries.map(country => (
-        <div key={country.cca3}>{country.name.common}</div>
+      {filteredCountries.map((country) => (
+        <Link to={`/country/${country.cca3}`} key={country.cca3}>
+          {country.name.common}
+        </Link>
       ))}
     </div>
   );
 };
-
-export default CountryList;
