@@ -1,16 +1,14 @@
 import {useState} from "react";
-import {Link} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
 
 interface Country {
   cca3: string;
-  name: {
-    common: string;
-  };
+  name: {common: string};
+  latlng: [number, number];
 }
 
 interface NationSearchProps {
-  onSearch: (term: string) => void;
+  onSearch: (latlng: [number, number], countryName: string) => void;
   countries: Country[];
 }
 
@@ -35,16 +33,22 @@ export const NationSearch: React.FC<NationSearchProps> = ({
     }
   };
 
+  const handleSuggestionClick = (countryName: string) => {
+    const selectedCountry = countries.find(
+      (c) => c.name.common === countryName
+    );
+    if (selectedCountry && selectedCountry.latlng) {
+      onSearch(selectedCountry.latlng, countryName);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-center">
-        {" "}
-        {/* Centre le conteneur */}
         <form
           className="relative flex items-center w-full max-w-customWidth m-5"
           onSubmit={(event) => {
             event.preventDefault();
-            onSearch(searchTerm);
           }}>
           <input
             className="w-full h-10 rounded-lg p-3 pl-10 shadow-custom focus:outline-none focus:ring-2 focus:ring-customGreen focus:border-customGreen"
@@ -56,15 +60,15 @@ export const NationSearch: React.FC<NationSearchProps> = ({
           <FaSearch className="absolute left-3 text-gray-400" />
         </form>
       </div>
-      <div className="inline-grid gap-4 mx-5 ">
+      <div className="inline-grid gap-1 mx-5">
         {suggestions.length > 0
           ? suggestions.map((country) => (
-              <Link
-                to={`/country/${country.cca3}`}
+              <button
+                onClick={() => handleSuggestionClick(country.name.common)}
                 key={country.cca3}
-                className="w-full border-black">
+                className="w-full border-black text-left">
                 {country.name.common}
-              </Link>
+              </button>
             ))
           : searchTerm.length >= 3 && (
               <div>Aucun pays trouvé pour "{searchTerm}".</div>
